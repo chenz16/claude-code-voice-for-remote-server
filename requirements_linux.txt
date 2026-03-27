@@ -1,0 +1,10 @@
+funasr
+modelscope
+torch
+torchaudio
+sounddevice
+soundfile
+numpy
+pynput
+evdev
+pyperclip

@@ -2,7 +2,7 @@
 
 ## Problem
 
-1. **Claude Code's built-in voice input does not support Chinese well.** Claude Code has voice input capability, but its speech recognition is not optimized for Chinese — accuracy is poor for Mandarin and other Chinese dialects.
+1. **Claude Code's built-in voice input does not support Chinese.** Claude Code has voice input capability, but it currently does not support Chinese language input.
 
 2. **Voice input is even harder on remote servers.** Many developers run Claude Code on remote GPU servers via SSH + tmux. In this setup, the microphone is on the local host machine, but Claude Code runs on the remote server. There is no straightforward way to bridge voice input from host to remote.
 

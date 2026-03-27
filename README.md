@@ -2,13 +2,13 @@
 
 ## Problem
 
-1. **Claude Code's built-in voice input does not support Chinese.** Claude Code has voice input capability, but it currently does not support Chinese language input.
+1. **Claude Code's built-in voice input does not support Mandarin.** Claude Code has voice input capability, but it currently does not support Mandarin language input.
 
 2. **Voice input is even harder on remote servers.** Many developers run Claude Code on remote GPU servers via SSH + tmux. In this setup, the microphone is on the local host machine, but Claude Code runs on the remote server. There is no straightforward way to bridge voice input from host to remote.
 
 ## Solution
 
-This project solves both problems by running speech recognition **locally on the host machine** using Alibaba's [SenseVoice](https://github.com/FunAudioLLM/SenseVoice) model (`iic/SenseVoiceSmall`), which delivers **state-of-the-art Chinese speech recognition accuracy**. The transcribed text is then sent directly to the remote Claude Code session via SSH + tmux.
+This project solves both problems by running speech recognition **locally on the host machine** using Alibaba's [SenseVoice](https://github.com/FunAudioLLM/SenseVoice) model (`iic/SenseVoiceSmall`), which delivers **state-of-the-art Mandarin speech recognition accuracy**. The transcribed text is then sent directly to the remote Claude Code session via SSH + tmux.
 
 Hold **Right Alt** to speak, release to auto-transcribe and send — it just works, from any window.
 
@@ -145,8 +145,8 @@ Model loaded and ready!
 
 This project uses [SenseVoice](https://github.com/FunAudioLLM/SenseVoice) by Alibaba's FunAudioLLM team, specifically the `iic/SenseVoiceSmall` model via the [FunASR](https://github.com/modelscope/FunASR) framework.
 
-SenseVoice is a speech foundation model with excellent Chinese speech recognition accuracy, supporting:
-- Mandarin Chinese (optimized)
+SenseVoice is a speech foundation model with excellent Mandarin speech recognition accuracy, supporting:
+- Mandarin Mandarin (optimized)
 - Cantonese, English, Japanese, Korean
 - Inverse text normalization (punctuation, numbers)
 - Emotion recognition and audio event detection

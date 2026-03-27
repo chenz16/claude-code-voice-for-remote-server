@@ -1,8 +1,16 @@
 # Claude Code Voice Input for Remote Servers
 
-Voice input for [Claude Code](https://claude.ai/code) running on remote servers via SSH + tmux.
+## Problem
 
-Hold **Right Alt** to speak, release to auto-transcribe and send text to your remote Claude Code session. Optimized for **Chinese speech recognition** using Alibaba's [SenseVoice](https://github.com/FunAudioLLM/SenseVoice) model (`iic/SenseVoiceSmall` via [FunASR](https://github.com/modelscope/FunASR)).
+1. **Claude Code does not natively support Chinese voice input.** While Claude Code is a powerful CLI tool, it only accepts text input — there is no built-in speech-to-text, especially for Chinese.
+
+2. **Voice input is even harder on remote servers.** Many developers run Claude Code on remote GPU servers via SSH + tmux. In this setup, the microphone is on the local host machine, but Claude Code runs on the remote server. There is no straightforward way to bridge voice input from host to remote.
+
+## Solution
+
+This project solves both problems by running speech recognition **locally on the host machine** using Alibaba's [SenseVoice](https://github.com/FunAudioLLM/SenseVoice) model (`iic/SenseVoiceSmall`), which delivers **state-of-the-art Chinese speech recognition accuracy**. The transcribed text is then sent directly to the remote Claude Code session via SSH + tmux.
+
+Hold **Right Alt** to speak, release to auto-transcribe and send — it just works, from any window.
 
 ## How It Works
 

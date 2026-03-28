@@ -1,4 +1,4 @@
-# Claude Code Voice Input — Chinese Speech Recognition
+# Claude Code Voice Input — Mandarin Speech Recognition
 
 Hold **Right Alt** to speak Mandarin, release to auto-transcribe and input. Powered by Alibaba's [SenseVoiceSmall](https://github.com/FunAudioLLM/SenseVoice) model — state-of-the-art Mandarin speech recognition accuracy, significantly better than Whisper.
 

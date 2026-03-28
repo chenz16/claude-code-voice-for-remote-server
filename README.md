@@ -1,6 +1,16 @@
 # Claude Code Voice Input — Mandarin Speech Recognition
 
-Hold **Right Alt** to speak Mandarin, release to auto-transcribe and input. Powered by Alibaba's [SenseVoiceSmall](https://github.com/FunAudioLLM/SenseVoice) model — state-of-the-art Mandarin speech recognition accuracy, significantly better than Whisper.
+## Problem
+
+1. **Claude Code's built-in voice input does not support Mandarin.** Claude Code has voice input capability, but it currently does not support Mandarin language input.
+
+2. **Voice input is even harder on remote servers.** Many developers run Claude Code on remote GPU servers via SSH + tmux. In this setup, the microphone is on the local host machine, but Claude Code runs on the remote server. There is no straightforward way to bridge voice input from host to remote.
+
+## Solution
+
+This project solves both problems by running speech recognition **locally on the host machine** using Alibaba's [SenseVoice](https://github.com/FunAudioLLM/SenseVoice) model (`iic/SenseVoiceSmall`), which delivers **state-of-the-art Mandarin speech recognition accuracy**. The transcribed text is then sent directly to the target window — either a remote Claude Code session via SSH + tmux, or any local window via clipboard paste.
+
+Hold **Right Alt** to speak, release to auto-transcribe and send — it just works, from any window.
 
 ---
 

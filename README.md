@@ -1,62 +1,61 @@
 # Claude Code Voice Input — Chinese Speech Recognition
 
-按住 Right Alt 说中文，松开后自动识别并输入。使用阿里 [SenseVoiceSmall](https://github.com/FunAudioLLM/SenseVoice) 模型，中文识别精度优于 Whisper。
+Hold **Right Alt** to speak Mandarin, release to auto-transcribe and input. Powered by Alibaba's [SenseVoiceSmall](https://github.com/FunAudioLLM/SenseVoice) model — state-of-the-art Mandarin speech recognition accuracy, significantly better than Whisper.
 
 ---
 
 ## Use Cases
 
-### Use Case 1: Linux → Remote Server (SSH + tmux)
+### Use Case 1: Linux Host → Remote Server (SSH + tmux)
 
 ```
-┌─────────────────────┐          SSH           ┌─────────────────────┐
-│   Linux Host 本机     │ ───────────────────── │   Remote GPU Server  │
-│                       │                       │                      │
-│  🎤 麦克风             │                       │  tmux session        │
-│  ↓                    │                       │    ↑                 │
-│  arecord 录音          │                       │    │                 │
-│  ↓                    │                       │    │                 │
-│  SenseVoice 语音转文字  │  ── send-keys ──────> │  Claude Code 输入框  │
-│                       │                       │                      │
-│  按住 Right Alt 说话    │                       │  文字出现，手动回车确认 │
-└─────────────────────┘                         └─────────────────────┘
+┌─────────────────────────┐        SSH         ┌─────────────────────┐
+│     Linux Host Machine   │ ────────────────── │  Remote GPU Server   │
+│                           │                   │                      │
+│  🎤 Microphone            │                   │  tmux session        │
+│  ↓                        │                   │    ↑                 │
+│  arecord (capture audio)  │                   │    │                 │
+│  ↓                        │                   │    │                 │
+│  SenseVoice (speech→text) │  ── send-keys ──> │  Claude Code input   │
+│                           │                   │                      │
+│  Hold Right Alt to speak  │                   │  Text appears, press │
+│  Release to transcribe    │                   │  Enter to confirm    │
+└─────────────────────────┘                     └─────────────────────┘
 ```
 
-**场景**：你在 Linux 桌面/笔记本上工作，Claude Code 跑在远程 GPU 服务器的 tmux 中。
-语音在本机录制和识别，识别结果通过 SSH 发送到远程 tmux session。
+**Scenario**: You work on a Linux desktop/laptop. Claude Code runs on a remote GPU server inside a tmux session. Audio is captured and transcribed locally; the result is sent to the remote tmux session via SSH.
 
-**脚本**：`voice_input.py`
+**Script**: `voice_input.py`
 
 ```bash
 python3 voice_input.py --host user@remote-server-ip
 ```
 
-### Use Case 2: Windows → 本地窗口（Claude Code / 任意应用）
+### Use Case 2: Windows → Local Window (Claude Code / Any App)
 
 ```
-┌──────────────────────────────────────────┐
-│              Windows 11                    │
-│                                            │
-│  🎤 麦克风                                  │
-│  ↓                                         │
-│  sounddevice 录音                           │
-│  ↓                                         │
-│  SenseVoice 语音转文字                       │
-│  ↓                                         │
-│  Ctrl+V 粘贴到当前焦点窗口                    │
-│                                            │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐ │
-│  │Claude Code│  │  浏览器   │  │  编辑器   │ │
-│  └──────────┘  └──────────┘  └──────────┘ │
-│                                            │
-│  按住 Right Alt 说话，松开后文字粘贴到焦点窗口  │
-└──────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│                 Windows 11                     │
+│                                                │
+│  🎤 Microphone                                 │
+│  ↓                                             │
+│  sounddevice (capture audio)                   │
+│  ↓                                             │
+│  SenseVoice (speech → text)                    │
+│  ↓                                             │
+│  Ctrl+V paste into focused window              │
+│                                                │
+│  ┌────────────┐ ┌──────────┐ ┌──────────────┐ │
+│  │ Claude Code │ │ Browser  │ │ Text Editor  │ │
+│  └────────────┘ └──────────┘ └──────────────┘ │
+│                                                │
+│  Hold Right Alt to speak, release to paste     │
+└──────────────────────────────────────────────┘
 ```
 
-**场景**：你在 Windows 上直接使用 Claude Code（或任何其他应用）。
-语音在本机录制和识别，识别结果自动粘贴到当前焦点窗口。
+**Scenario**: You use Claude Code (or any app) directly on Windows. Audio is captured and transcribed locally; the result is pasted into whichever window has focus.
 
-**脚本**：`voice_input_win.py`
+**Script**: `voice_input_win.py`
 
 ```powershell
 python voice_input_win.py
@@ -64,94 +63,95 @@ python voice_input_win.py
 
 ---
 
-## 安装
+## Installation
 
 ### Use Case 1: Linux → Remote Server
 
 ```bash
-# 系统依赖
+# System dependencies
 sudo apt install alsa-utils
 
-# Python 依赖
+# Python dependencies
 pip install funasr modelscope torch torchaudio evdev
 
-# 加入 input 组（evdev 全局键盘监听需要）
+# Add user to input group (required for evdev global keyboard listener)
 sudo usermod -aG input $USER
-# 重新登录生效
+# Log out and log back in for this to take effect
 
-# SSH 密钥登录（免密码）
+# Set up SSH key auth (passwordless login)
 ssh-copy-id user@remote-server-ip
 
-# 运行
+# Run
 python3 voice_input.py --host user@remote-server-ip
 ```
 
-#### 可选：设为 systemd 开机自启
+#### Optional: Auto-start as systemd service
 
-编辑 `setup_service.sh` 中的路径和主机地址，然后：
+Edit `setup_service.sh` to set your Python path, script path, and remote host, then:
 
 ```bash
 bash setup_service.sh
 ```
 
-管理服务：
+Manage the service:
 
 ```bash
-systemctl --user status voice-input.service     # 状态
-journalctl --user -u voice-input.service -f      # 日志
-systemctl --user restart voice-input.service     # 重启
-systemctl --user stop voice-input.service        # 停止
+systemctl --user status voice-input.service      # Check status
+journalctl --user -u voice-input.service -f       # View logs
+systemctl --user restart voice-input.service      # Restart
+systemctl --user stop voice-input.service         # Stop
 ```
 
-### Use Case 2: Windows 本地
+### Use Case 2: Windows Local
 
 ```powershell
-# 安装 Python 3.11+（如未安装）
+# Install Python 3.11+ (if not installed)
 winget install Python.Python.3.11
 
-# 安装依赖
+# Install dependencies
 pip install -r requirements_win.txt
 
-# 运行
+# Run
 python voice_input_win.py
 ```
 
-**注意**：如果 `python` 命令提示从 Microsoft Store 安装，需要关闭 App execution aliases：
-Settings > Apps > Advanced app settings > App execution aliases → 关掉 python.exe 和 python3.exe
+> **Note**: If the `python` command opens Microsoft Store instead of running Python, go to
+> **Settings > Apps > Advanced app settings > App execution aliases** and turn off `python.exe` and `python3.exe`.
 
 ---
 
-## 使用方法
+## Usage
 
-1. 运行对应脚本（首次会下载 ~1GB 模型）
-2. **切换到目标窗口**（Claude Code、终端、编辑器等）
-3. **按住 Right Alt** 说中文
-4. **松开** → 自动识别并输入
-5. **Esc** 或 **Ctrl+C** 退出
-
----
-
-## 文件说明
-
-```
-voice_input.py           # Linux 版 — SSH 远程 tmux 发送
-voice_input_win.py       # Windows 版 — 本地剪贴板粘贴
-voice_input_linux.py     # Linux / WSL 版 — 本地粘贴 + 远程模式可选
-setup_service.sh         # Linux systemd 服务安装脚本
-requirements_win.txt     # Windows Python 依赖
-requirements_linux.txt   # Linux Python 依赖
-setup.bat                # Windows 一键安装依赖
-```
+1. Run the script (first run downloads the ~1GB model)
+2. **Switch to the target window** (Claude Code, terminal, browser, etc.)
+3. **Hold Right Alt** and speak Mandarin
+4. **Release** → auto-transcribe and input
+5. **Esc** or **Ctrl+C** to exit
 
 ---
 
-## 语音模型
+## Files
 
-使用阿里巴巴 [SenseVoiceSmall](https://github.com/FunAudioLLM/SenseVoice)：
-- 中文（普通话 + 粤语）识别精度领先
-- 支持英语、日语、韩语
-- 含逆文本正则化（语音中的数字自动转为阿拉伯数字）
-- 模型大小 ~1GB，本地运行，无需联网 API
+| File | Platform | Description |
+|------|----------|-------------|
+| `voice_input.py` | Linux | SSH remote mode — sends text to tmux session on remote server |
+| `voice_input_win.py` | Windows | Local mode — pastes text into focused window via clipboard |
+| `voice_input_linux.py` | Linux / WSL | Local paste + optional remote mode |
+| `setup_service.sh` | Linux | systemd service installer for auto-start on boot |
+| `requirements_win.txt` | Windows | Python dependencies |
+| `requirements_linux.txt` | Linux | Python dependencies |
+| `setup.bat` | Windows | One-click dependency installer |
+
+---
+
+## Speech Model
+
+This project uses [SenseVoiceSmall](https://github.com/FunAudioLLM/SenseVoice) by Alibaba's FunAudioLLM team:
+
+- **Best-in-class Mandarin** (+ Cantonese) speech recognition
+- Also supports English, Japanese, Korean
+- Inverse text normalization (spoken numbers → digits, punctuation insertion)
+- ~1GB model, runs fully offline — no API key or internet needed after download
 
 ## License
 
